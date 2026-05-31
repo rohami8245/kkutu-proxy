@@ -8,19 +8,17 @@ app.get("/check", async (req, res) => {
     const word = req.query.word;
     if (!word) return res.json({ valid: false });
 
-    const url = `https://krdict.korean.go.kr/api/search?key=${API_KEY}&q=${encodeURIComponent(word)}&part=word&sort=dict&num=1&advanced=y&type1=word`;
+    const url = `https://krdict.korean.go.kr/api/search?key=${API_KEY}&q=${encodeURIComponent(word)}&part=word&sort=dict`;
 
     try {
         const response = await fetch(url);
         const text = await response.text();
 
-        // 디버그용 로그
         console.log("검색어:", word);
         console.log("응답:", text.substring(0, 500));
 
-        // 단어가 정확히 일치하는지 확인
-        const hasItem = text.includes("<total>") && !text.includes("<total>0</total>");
-        res.json({ valid: hasItem });
+        const hasResult = text.includes("<total>") && !text.includes("<total>0</total>");
+        res.json({ valid: hasResult });
     } catch (e) {
         console.error(e);
         res.json({ valid: false });
